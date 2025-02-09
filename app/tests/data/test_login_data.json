@@ -1,0 +1,6 @@
+[
+    {"input_data": {"username": "user", "user_password": "pass"}, "expected_status": 200},
+    {"input_data": {"username": "user", "user_password": "wrongpass"}, "expected_status": 401},
+    {"input_data": {"username": "user"}, "expected_status": 422},
+    {"input_data": {"username": 123, "password": true}, "expected_status": 422}
+]

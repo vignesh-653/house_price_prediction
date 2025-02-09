@@ -1,0 +1,13 @@
+# pip install -r requirements.txt
+numpy
+pandas
+scikit-learn
+seaborn
+matplotlib
+fastapi
+uvicorn
+psycopg2-binary
+jinja2
+python-multipart
+pytest
+httpx

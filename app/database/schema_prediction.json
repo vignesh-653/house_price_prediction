@@ -1,0 +1,11 @@
+{
+    "predictions": {
+        "Square_Footage": "INTEGER NOT NULL",
+        "Num_Bedrooms": "INTEGER NOT NULL",
+        "Num_Bathrooms": "INTEGER NOT NULL",
+        "Lot_Size": "FLOAT NOT NULL",
+        "Garage_Size": "INTEGER NOT NULL",
+        "Neighborhood_Quality": "INTEGER NOT NULL",
+        "Age": "INTEGER NOT NULL"
+    }
+}

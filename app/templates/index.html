@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>House Price Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .form-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        label {
+            flex: 0 0 40%;
+            font-weight: bold;
+        }
+        input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 18px;
+            color: #333;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>House Price Prediction</h2>
+        <form id="predictionForm">
+            <div class="form-group">
+                <label for="squareFootage">Square Footage</label>
+                <input type="number" id="squareFootage" name="square_footage" required placeholder="e.g., 2000">
+            </div>
+            <div class="form-group">
+                <label for="numBedrooms">Number of Bedrooms</label>
+                <input type="number" id="numBedrooms" name="num_bedrooms" required placeholder="e.g., 3">
+            </div>
+            <div class="form-group">
+                <label for="numBathrooms">Number of Bathrooms</label>
+                <input type="number" id="numBathrooms" name="num_bathrooms" required placeholder="e.g., 2">
+            </div>
+            <div class="form-group">
+                <label for="lotSize">Lot Size (in acres)</label>
+                <input type="number" id="lotSize" name="lot_size" step="0.01" required placeholder="e.g., 0.5">
+            </div>
+            <div class="form-group">
+                <label for="yearBuilt">Year Built</label>
+                <input type="number" id="yearBuilt" name="year_built" required placeholder="e.g., 1995">
+            </div>
+            <div class="form-group">
+                <label for="garageSize">Garage Size</label>
+                <input type="number" id="garageSize" name="garage_size" required placeholder="e.g., 2">
+            </div>
+            <div class="form-group">
+                <label for="neighborhoodQuality">Neighborhood Quality (1-10)</label>
+                <input type="number" id="neighborhoodQuality" name="neighborhood_quality" required placeholder="e.g., 7">
+            </div>
+            <button type="submit">Predict House Price</button>
+        </form>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        document.getElementById("predictionForm").addEventListener("submit", async (event) => {
+    event.preventDefault(); // Prevent default form submission
+
+    // Get current year to calculate age
+    const currentYear = new Date().getFullYear();
+
+    // Extract input values
+    const squareFootage = parseInt(document.getElementById("squareFootage").value, 10);
+    const numBedrooms = parseInt(document.getElementById("numBedrooms").value, 10);
+    const numBathrooms = parseInt(document.getElementById("numBathrooms").value, 10);
+    const lotSize = parseFloat(document.getElementById("lotSize").value);
+    const yearBuilt = parseInt(document.getElementById("yearBuilt").value, 10);
+    const garageSize = parseInt(document.getElementById("garageSize").value, 10);
+    const neighborhoodQuality = parseInt(document.getElementById("neighborhoodQuality").value, 10);
+
+    // Calculate age from Year Built
+    const age = currentYear - yearBuilt;
+
+    // Create JSON object with input data
+    const inputData = {
+        square_footage: squareFootage,
+        num_bedrooms: numBedrooms,
+        num_bathrooms: numBathrooms,
+        lot_size: lotSize,
+        garage_size: garageSize,
+        neighborhood_quality: neighborhoodQuality,
+        age: age
+    };
+
+    try {
+        // Send data to API in JSON format
+        const response = await fetch("http://127.0.0.1:8000/predict", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(inputData)
+        });
+
+        if (!response.ok) {
+            throw new Error("Network response was not ok " + response.statusText);
+        }
+
+        // Parse JSON response
+        const data = await response.json();
+        console.log(data); // Log the response for debugging
+
+        // Update result in the HTML page
+        if (data && data.predicted_house_price) {
+            document.getElementById("result").textContent = `Predicted Price: ${data.predicted_house_price}`;
+        } else {
+            throw new Error("Invalid data format received");
+        }
+    } catch (error) {
+        console.error("Error fetching the prediction:", error);
+        document.getElementById("result").textContent = "Error fetching prediction.";
+    }
+});
+
+    </script>
+</body>
+</html>
+
+
+
